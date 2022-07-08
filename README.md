@@ -1,6 +1,6 @@
 ## Simple json parser
 
-JSON which is not so strict and very similar with JS object syntax.
+JSON which is not so strict and very similar to JS object syntax.
 
 
 `{ key: value, }` = ` ['key' => 'value'] ` \
