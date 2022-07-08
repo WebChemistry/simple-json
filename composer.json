@@ -1,0 +1,16 @@
+{
+    "name": "webchemistry/simple-json",
+    "require": {
+        "php": ">= 8.0",
+        "doctrine/lexer": "^1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "WebChemistry\\SimpleJson\\": "src"
+        }
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^1.8",
+        "nette/tester": "^2.4"
+    }
+}
