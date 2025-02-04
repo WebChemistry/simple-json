@@ -34,7 +34,7 @@ final class SimpleJsonLexer extends AbstractLexer
 		return ['\s+', '(.)'];
 	}
 
-	protected function getType(string &$value): int
+	protected function getType(&$value): int
 	{
 		if (is_numeric($value)) {
 			if (str_contains($value, '.')) {
