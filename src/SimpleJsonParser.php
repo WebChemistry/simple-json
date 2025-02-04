@@ -2,6 +2,8 @@
 
 namespace WebChemistry\SimpleJson;
 
+use Doctrine\Common\Lexer\Token;
+use LogicException;
 use WebChemistry\SimpleJson\Exception\SimpleJsonSyntaxError;
 use WebChemistry\SimpleJson\Exception\SimpleJsonUnexpectedEnd;
 
@@ -169,7 +171,7 @@ final class SimpleJsonParser
 	 */
 	private function getTokenType(): int
 	{
-		return (int) ($this->lexer->token['type'] ?? throw new SimpleJsonUnexpectedEnd());
+		return $this->getTypeFromToken($this->lexer->token) ?? throw new SimpleJsonUnexpectedEnd();
 	}
 
 	/**
@@ -177,7 +179,7 @@ final class SimpleJsonParser
 	 */
 	private function getTokenValue(): string
 	{
-		return (string) ($this->lexer->token['value'] ?? throw new SimpleJsonUnexpectedEnd());
+		return $this->getValueFromToken($this->lexer->token) ?? throw new SimpleJsonUnexpectedEnd();
 	}
 
 	/**
@@ -185,7 +187,7 @@ final class SimpleJsonParser
 	 */
 	private function getLookaheadType(): int
 	{
-		return (int) ($this->lexer->lookahead['type'] ?? throw new SimpleJsonUnexpectedEnd());
+		return $this->getTypeFromToken($this->lexer->lookahead) ?? throw new SimpleJsonUnexpectedEnd();
 	}
 
 	/**
@@ -193,7 +195,55 @@ final class SimpleJsonParser
 	 */
 	private function getLookaheadValue(): string
 	{
-		return (string) ($this->lexer->lookahead['value'] ?? throw new SimpleJsonUnexpectedEnd());
+		return $this->getValueFromToken($this->lexer->lookahead) ?? throw new SimpleJsonUnexpectedEnd();
+	}
+
+	/**
+	 * @param Token<int, string>|mixed[]|null $token
+	 */
+	private function getValueFromToken(Token|array|null $token): ?string
+	{
+		if (!$token) {
+			return null;
+		}
+
+		if (is_array($token)) { // backward compatibility
+			if (!isset($token['value'])) {
+				return null;
+			}
+
+			if (!is_scalar($token['value'])) {
+				throw new LogicException('Token value must be scalar.');
+			}
+
+			return (string) $token['value'];
+		}
+
+		return $token->value;
+	}
+
+	/**
+	 * @param Token<int, string>|mixed[]|null $token
+	 */
+	private function getTypeFromToken(Token|array|null $token): ?int
+	{
+		if (!$token) {
+			return null;
+		}
+
+		if (is_array($token)) { // backward compatibility
+			if (!isset($token['type'])) {
+				return null;
+			}
+
+			if (!is_scalar($token['type'])) {
+				throw new LogicException('Token type must be scalar.');
+			}
+
+			return (int) $token['type'];
+		}
+
+		return $token->type;
 	}
 
 	/**

@@ -4,6 +4,9 @@ namespace WebChemistry\SimpleJson;
 
 use Doctrine\Common\Lexer\AbstractLexer;
 
+/**
+ * @extends AbstractLexer<int, string>
+ */
 final class SimpleJsonLexer extends AbstractLexer
 {
 
@@ -16,7 +19,7 @@ final class SimpleJsonLexer extends AbstractLexer
 	public const T_COLON = 6;
 	public const T_UNKNOWN = 9999;
 
-	protected function getCatchablePatterns()
+	protected function getCatchablePatterns(): array
 	{
 		return [
 			'[a-zA-Z_][\w?]+', // identifiers
@@ -26,15 +29,12 @@ final class SimpleJsonLexer extends AbstractLexer
 		];
 	}
 
-	protected function getNonCatchablePatterns()
+	protected function getNonCatchablePatterns(): array
 	{
 		return ['\s+', '(.)'];
 	}
 
-	/**
-	 * @param string $value
-	 */
-	protected function getType(&$value)
+	protected function getType(string &$value): int
 	{
 		if (is_numeric($value)) {
 			if (str_contains($value, '.')) {
